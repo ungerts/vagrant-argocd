@@ -19,9 +19,9 @@ Vagrant.configure("2") do |config|
 	microk8s enable dns
 	microk8s kubectl create namespace argocd
 	microk8s kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-	microk8s kubectl wait --timeout=180s --for=condition=ready pod -l app.kubernetes.io/name=argocd-server
+	microk8s kubectl wait -n argocd --timeout=180s --for=condition=ready pod -l app.kubernetes.io/name=argocd-server
 	microk8s kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
-	microk8s kubectl get pods -n argocd -l app.kubernetes.io/name=argocd-server -o name | cut -d'/' -f 2
+	echo "Password: $(microk8s kubectl get pods -n argocd -l app.kubernetes.io/name=argocd-server -o name | cut -d'/' -f 2)"
 #    microk8s kubectl port-forward --address localhost,192.168.33.13 svc/argocd-server -n argocd 8080:443
   SHELL
 end
